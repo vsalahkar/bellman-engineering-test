@@ -5,7 +5,7 @@
         </div>
         <div class="basePropertyFile__name">
             <h1 class="basePropertyFile__fileName">{{fileName}}</h1>
-            <h2 class="basePropertyF__description">{{fileDescription}}</h2>
+            <h2 class="basePropertyFile__description">{{fileDescription}}</h2>
         </div>
         <div class="basePropertyFile__updates">
             <div class="basePropertyFile__status">{{fileStatus}}</div>
@@ -45,6 +45,8 @@ export default {
                     return '--isWork'
                 case 'GENERAL_MEETING':
                     return '--isGeneralMeeting'
+                case 'ELEVATOR':
+                    return '--isElevator'
                 default:
                     return '--isSmallWork'
             }
@@ -60,13 +62,23 @@ export default {
     .basePropertyFile {
         display: flex;
         align-items: center;
+        padding: 8px 0;
+        margin-bottom: 16px;
 
         &__icon {
+            margin-right: 10px;
+            border-radius: 100%;
+            flex-shrink: 0;
+            align-self: flex-start;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+
+            i {
+                color: $base-color-light-3;
+            }
 
             &--isWork {
                 background-color: $taking-action-1;
@@ -79,9 +91,18 @@ export default {
             &--isGeneralMeeting {
                 background-color: $primary-color;
             }
+
+            &--isElevator {
+                background-color: $tertiary-color;
+
+                i {
+                    color: $base-color-light-2;
+                }
+            }
         }
 
         &__name {
+
         }
 
         &__fileName {
@@ -90,9 +111,15 @@ export default {
 
         &__description {
             font-size: 15px;
+            color: $base-color-light-2;
+            font-weight: normal;
         }
 
         &__updates {
+
+        }
+
+        &__status {
 
         }
 

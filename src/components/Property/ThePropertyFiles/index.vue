@@ -3,23 +3,14 @@
         <header class="thePropertyFiles__header">
             <h1>{{numberOfFiles}} Files</h1>
             <div class="thePropertyFiles__filterBar">
-                <input type="text" placeholder="Search a file">
+                <input type="text" placeholder="Search a file" v-model="searchText">
                 <i class="fa fa-search"></i>
             </div>
         </header>
         <section class="thePropertyFiles__tabs">
             <ul class="tabs">
-                <li class="tabs__tab">
-                    <button href="">Accountancy <span>42</span></button>
-                </li>
-                <li class="tabs__tab">
-                    <button href="">Accountancy <span>42</span></button>
-                </li>
-                <li class="tabs__tab">
-                    <button href="">Accountancy <span>42</span></button>
-                </li>
-                <li class="tabs__tab">
-                    <button href="">Accountancy <span>42</span></button>
+                <li class="tabs__tab" v-for="filter in filters" :key="filter.label">
+                    <button href="">{{filter.label}} <span>{{filter.count}}</span></button>
                 </li>
             </ul>
         </section>
@@ -30,7 +21,7 @@
                     :file-status="file.status"
                     :file-update-time="file.lastActivityDate"
                     :file-type="file.type"
-                    v-for="(file, index) in files"
+                    v-for="(file, index) in filteredList"
                     :key="`${file.fileName}_${index}`"
             />
         </main>
@@ -52,7 +43,10 @@
 
 <script>
 import axios from 'axios'
+import {countBy, map} from 'lodash'
+
 import configuration from '../../../../configuration'
+
 import BasePropertyFile from './BasePropertyFile'
 
 export default {
@@ -87,7 +81,8 @@ export default {
                     fileStatus: 'Open',
                     fileUpdateTime: '20/01/2019'
                 },
-            ]
+            ],
+            searchText: ''
         }
     },
     props: {
@@ -118,6 +113,21 @@ export default {
         numberOfFiles() {
             return this.files.length
         },
+        filters() {
+            const temporaryObject = countBy(this.files, 'type')
+            const cleanFilters = map(temporaryObject, (count, label) => ({label: label.toLowerCase().replace('_', ' '), count}))
+
+            return cleanFilters
+        },
+        filteredList () {
+            const inputValue = this.searchText.toLowerCase()
+
+            return this.files.filter(file => {
+                const includeRoomName = file.title.toLowerCase().includes(inputValue)
+
+                return includeRoomName
+            })
+        }
     }
 }
 </script>
@@ -176,16 +186,18 @@ export default {
         }
 
         .tabs {
-            display: flex;
-            padding: 16px 0;
             border-bottom: 1px solid transparentize($base-color-light-2, 0.7);
+            padding: 16px 0;
+            display: flex;
 
             &__tab {
-                font-size: 14px;
                 margin-right: 16px;
+                font-size: 14px;
 
                 button {
+                    text-transform: capitalize;
                     color: $base-color-light-2;
+                    white-space: nowrap;
                 }
 
                 span {
