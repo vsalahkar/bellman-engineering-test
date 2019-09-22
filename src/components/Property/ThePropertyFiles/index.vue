@@ -9,8 +9,10 @@
         </header>
         <section class="thePropertyFiles__tabs">
             <ul class="tabs">
-                <li class="tabs__tab" v-for="filter in filters" :key="filter.label">
-                    <button href="">{{filter.label}} <span>{{filter.count}}</span></button>
+                <li class="tabs__tab" :class="{'tabs__tab--isSelected' : filesFulterNormalized === filter.label}"
+                    v-for="filter in filters" :key="filter.label">
+                    <button @click.prevent="selectFilter(filter.label)">{{filter.label}} <span>{{filter.count}}</span>
+                    </button>
                 </li>
             </ul>
         </section>
@@ -21,7 +23,7 @@
                     :file-status="file.status"
                     :file-update-time="file.lastActivityDate"
                     :file-type="file.type"
-                    v-for="(file, index) in filteredList"
+                    v-for="(file, index) in filesFiltered"
                     :key="`${file.fileName}_${index}`"
             />
         </main>
@@ -30,10 +32,10 @@
             <div class="footer__pagesNavigation">
                 <button class="pagesNavigation__previous"></button>
                 <ul class="pagesNavigation__pages">
-<!--                    <li class="pagesNavigation__page">1</li>-->
-<!--                    <li class="pagesNavigation__page">1</li>-->
-<!--                    <li class="pagesNavigation__page">1</li>-->
-<!--                    <li class="pagesNavigation__page">1</li>-->
+                    <!--                    <li class="pagesNavigation__page">1</li>-->
+                    <!--                    <li class="pagesNavigation__page">1</li>-->
+                    <!--                    <li class="pagesNavigation__page">1</li>-->
+                    <!--                    <li class="pagesNavigation__page">1</li>-->
                 </ul>
                 <button class="pagesNavigation__next"></button>
             </div>
@@ -56,33 +58,8 @@ export default {
     data: () => {
         return {
             files: [],
-            filesList: [
-                {
-                    fileName: 'Ravalement de façade',
-                    fileDescription: 'Demande de devis envoyée à l\'architecte',
-                    fileStatus: 'Open',
-                    fileUpdateTime: '20/01/2019'
-                },
-                {
-                    fileName: 'Ravalement de façade',
-                    fileDescription: 'Demande de devis envoyée à l\'architecte',
-                    fileStatus: 'Open',
-                    fileUpdateTime: '20/01/2019'
-                },
-                {
-                    fileName: 'Ravalement de façade',
-                    fileDescription: 'Demande de devis envoyée à l\'architecte',
-                    fileStatus: 'Open',
-                    fileUpdateTime: '20/01/2019'
-                },
-                {
-                    fileName: 'Ravalement de façade',
-                    fileDescription: 'Demande de devis envoyée à l\'architecte',
-                    fileStatus: 'Open',
-                    fileUpdateTime: '20/01/2019'
-                },
-            ],
-            searchText: ''
+            searchText: '',
+            filesFiter: '',
         }
     },
     props: {
@@ -108,6 +85,15 @@ export default {
                 console.error('Files cannot be fetched')
             }
         },
+        selectFilter(filterLabel) {
+            const cleanFileFilter = filterLabel.toUpperCase().replace(' ', '_')
+
+            if (this.filesFiter === cleanFileFilter) {
+                this.filesFiter = ''
+            } else {
+                this.filesFiter = cleanFileFilter
+            }
+        }
     },
     computed: {
         numberOfFiles() {
@@ -115,11 +101,14 @@ export default {
         },
         filters() {
             const temporaryObject = countBy(this.files, 'type')
-            const cleanFilters = map(temporaryObject, (count, label) => ({label: label.toLowerCase().replace('_', ' '), count}))
+            const cleanFilters = map(temporaryObject, (count, label) => ({
+                label: label.toLowerCase().replace('_', ' '),
+                count
+            }))
 
             return cleanFilters
         },
-        filteredList () {
+        filteredList() {
             const inputValue = this.searchText.toLowerCase()
 
             return this.files.filter(file => {
@@ -127,6 +116,16 @@ export default {
 
                 return includeRoomName
             })
+        },
+        filesFiltered() {
+            if (this.filesFiter === '') {
+                return this.filteredList
+            }
+
+            return this.filteredList.filter(file => file.type === this.filesFiter)
+        },
+        filesFulterNormalized() {
+            return this.filesFiter.toLowerCase().replace('_', ' ')
         }
     }
 }
@@ -137,6 +136,8 @@ export default {
     @import "../../../styles/base";
 
     .thePropertyFiles {
+        box-shadow: 0px 4px 20px #4D5E711A;
+        border-radius: 4px;
         background-color: $base-color-light-3;
         padding: 32px 24px;
 
@@ -160,6 +161,7 @@ export default {
 
             input {
                 border-radius: 1000px;
+                border: 1px solid transparent;
                 background-color: $tertiary-color;
                 max-width: 350px;
                 flex: 1;
@@ -167,8 +169,9 @@ export default {
                 color: $secondary-color;
 
                 &:focus {
+                    border-color: $taking-action-1;
                     transition: background-color 0.1s ease-out;
-                    background-color: darken($tertiary-color, 5);
+                    background-color: darken($tertiary-color, 1);
                 }
             }
 
@@ -202,6 +205,11 @@ export default {
 
                 span {
                     margin-left: 4px;
+                }
+
+                &--isSelected button {
+                    color: $secondary-color;
+                    border-bottom: 1px solid $secondary-color;
                 }
             }
         }
