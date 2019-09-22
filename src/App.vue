@@ -1,14 +1,17 @@
 <template>
-  <div id="app">
-    <h1>Hello world</h1>
-  </div>
+    <div id="app">
+        <the-navigation></the-navigation>
+    </div>
 </template>
 
 <script>
+import TheNavigation from './components/TheNavigation'
 
 export default {
     name: 'app',
-    components: {}
+    components: {
+        TheNavigation,
+    }
 }
 </script>
 
