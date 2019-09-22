@@ -1,7 +1,7 @@
 <template>
     <section class="thePropertyFiles">
         <header class="thePropertyFiles__header">
-            <h1>247 Files</h1>
+            <h1>{{numberOfFiles}} Files</h1>
             <div class="thePropertyFiles__filterBar">
                 <input type="text" placeholder="Search a file">
                 <i class="fa fa-search"></i>
@@ -25,11 +25,13 @@
         </section>
         <main class="theProperty__filesList">
             <base-property-file
-                    :file-name="file.fileName"
-                    :file-description="file.fileDescription"
-                    :file-status="file.fileStatus"
-                    :file-update-time="file.fileUpdateTime"
-                    v-for="file in filesList"
+                    :file-name="file.title"
+                    :file-description="file.lastActivity"
+                    :file-status="file.status"
+                    :file-update-time="file.lastActivityDate"
+                    :file-type="file.type"
+                    v-for="(file, index) in files"
+                    :key="`${file.fileName}_${index}`"
             />
         </main>
         <footer>
@@ -49,6 +51,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import configuration from '../../../../configuration'
 import BasePropertyFile from './BasePropertyFile'
 
 export default {
@@ -57,6 +61,7 @@ export default {
     },
     data: () => {
         return {
+            files: [],
             filesList: [
                 {
                     fileName: 'Ravalement de façade',
@@ -84,6 +89,35 @@ export default {
                 },
             ]
         }
+    },
+    props: {
+        propertyId: {
+            type: String,
+            required: true,
+            default: '',
+        }
+    },
+    mounted() {
+        this.getFile()
+    },
+    methods: {
+        async getFile() {
+            try {
+                const response = await axios({
+                    method: 'get',
+                    url: `${configuration.backEndUrl}/property/${this.propertyId}/file`
+                })
+
+                this.files = response.data
+            } catch (err) {
+                console.error('Files cannot be fetched')
+            }
+        },
+    },
+    computed: {
+        numberOfFiles() {
+            return this.files.length
+        },
     }
 }
 </script>

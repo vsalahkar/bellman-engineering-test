@@ -69,7 +69,6 @@ export default {
         padding: 48px 0;
         max-width: 205px;
         width: 100%;
-        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;

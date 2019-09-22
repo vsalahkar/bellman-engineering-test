@@ -1,3 +1,5 @@
+@import './variables';
+
 ul {
   list-style: none;
   padding: 0;
@@ -12,4 +14,12 @@ button {
 input {
   background-color: transparent;
   border: none;
+}
+
+body {
+  background-color: $tertiary-color;
+}
+
+body {
+  font-family: 'Rubik', sans-serif;
 }

@@ -5,7 +5,7 @@
         </div>
         <main class="app__main property">
             <section class="property__management">
-                <the-property-files></the-property-files>
+                <the-property-files v-if="state.selectedPropertyId" :propertyId="state.selectedPropertyId"></the-property-files>
                 <the-property-contracts></the-property-contracts>
                 <the-property-coowners></the-property-coowners>
             </section>
@@ -19,6 +19,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+import Configuration from '../configuration'
+
 import TheNavigation from './components/TheNavigation'
 
 import ThePropertyFiles from './components/Property/ThePropertyFiles'
@@ -39,16 +42,38 @@ export default {
         ThePropertyBasicInformation,
         ThePropertyRequests,
         ThePropertyRules
+    },
+    mounted() {
+        this.fetchProperties()
+    },
+    data: () => {
+        return {
+            state: {
+                properties: [],
+                selectedPropertyId: null
+            }
+        }
+    },
+    methods: {
+        async fetchProperties() {
+            try {
+                const response = await axios.get(`${Configuration.backEndUrl}/property`)
+
+                this.state.properties = response.data
+                this.state.selectedPropertyId = this.state.properties[0].id
+            } catch (err) {
+                console.error('Properties cannot be fetched')
+            }
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
     @import "./styles/variables";
+    @import "./styles/base";
 
     .bellman {
-        background-color: $base-color-light;
-        width: 100vw;
         height: 100vh;
         display: flex;
 
