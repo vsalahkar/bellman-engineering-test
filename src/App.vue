@@ -1,6 +1,8 @@
 <template>
-    <div id="app">
-        <the-navigation></the-navigation>
+    <section class="bellman">
+        <div class="bellman__navigation">
+            <the-navigation></the-navigation>
+        </div>
         <main class="app__main property">
             <section class="property__management">
                 <the-property-files></the-property-files>
@@ -13,7 +15,7 @@
                 <the-property-rules></the-property-rules>
             </aside>
         </main>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -41,5 +43,40 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+    @import "./styles/variables";
+
+    .bellman {
+        background-color: $base-color-light;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+
+        &__navigation {
+            padding: 0 40px;
+            display: flex;
+            justify-content: center;
+            flex: 4;
+            height: 100%;
+        }
+    }
+
+    .property {
+        flex: 16;
+        display: flex;
+        overflow: auto;
+
+        &__management,
+        &__information {
+            padding: 48px 0;
+        }
+
+        &__management {
+            flex: 9;
+        }
+
+        &__information {
+            flex: 5;
+        }
+    }
 </style>
