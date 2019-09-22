@@ -30,10 +30,10 @@
             <div class="footer__pagesNavigation">
                 <button class="pagesNavigation__previous"></button>
                 <ul class="pagesNavigation__pages">
-                    <li class="pagesNavigation__page">1</li>
-                    <li class="pagesNavigation__page">1</li>
-                    <li class="pagesNavigation__page">1</li>
-                    <li class="pagesNavigation__page">1</li>
+<!--                    <li class="pagesNavigation__page">1</li>-->
+<!--                    <li class="pagesNavigation__page">1</li>-->
+<!--                    <li class="pagesNavigation__page">1</li>-->
+<!--                    <li class="pagesNavigation__page">1</li>-->
                 </ul>
                 <button class="pagesNavigation__next"></button>
             </div>

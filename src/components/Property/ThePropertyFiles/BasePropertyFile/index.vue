@@ -8,13 +8,15 @@
             <h2 class="basePropertyFile__description">{{fileDescription}}</h2>
         </div>
         <div class="basePropertyFile__updates">
-            <div class="basePropertyFile__status">{{fileStatus}}</div>
-            <div class="basePropertyFile__time">{{fileUpdateTime}}</div>
+            <div class="basePropertyFile__status" :class="`basePropertyFile__status${getFileStatusColor}`">{{fileStatusLowerCased}}</div>
+            <div class="basePropertyFile__time">Last activity on {{fileUpdateTimeFormatted}}</div>
         </div>
     </div>
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
     props: {
         fileName: {
@@ -51,6 +53,17 @@ export default {
                     return '--isSmallWork'
             }
         }
+    },
+    computed: {
+        fileStatusLowerCased() {
+            return this.fileStatus.toLowerCase()
+        },
+        getFileStatusColor() {
+            return this.fileStatusLowerCased === 'open' ? '--isOpen' : '--isClosed'
+        },
+        fileUpdateTimeFormatted() {
+            return moment(this.fileUpdateTime).format('DD/MM/YYYY')
+        }
     }
 }
 </script>
@@ -66,7 +79,6 @@ export default {
         margin-bottom: 16px;
 
         &__icon {
-            margin-right: 10px;
             border-radius: 100%;
             flex-shrink: 0;
             align-self: flex-start;
@@ -102,7 +114,8 @@ export default {
         }
 
         &__name {
-
+            flex: 1;
+            padding: 0 12px;
         }
 
         &__fileName {
@@ -116,15 +129,33 @@ export default {
         }
 
         &__updates {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
 
+        &__status,
+        &__time {
+            text-align: right;
         }
 
         &__status {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: capitalize;
 
+            &--isOpen {
+                color: $taking-action-3;
+            }
+
+            &--isClosed {
+                color: transparentize($secondary-color, 0.3);
+            }
         }
 
         &__time {
-
+            font-size: 12px;
+            color: $base-color-light-2;
         }
     }
 </style>
