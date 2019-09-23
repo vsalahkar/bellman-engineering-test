@@ -17,7 +17,9 @@
             </ul>
         </section>
         <main class="theProperty__filesList">
+            <div class="thePropertyFiles--isLoading" v-if="isLoading">Files list is loading...</div>
             <base-property-file
+                    v-else
                     :file-name="file.title"
                     :file-description="file.lastActivity"
                     :file-status="file.status"
@@ -31,11 +33,13 @@
             <div class="footer__pages">Page 1/20</div>
             <div class="footer__pagesNavigation">
                 <ul class="pagesNavigation__pages">
-                    <li class="pagesNavigation__page"><a href=""><i class="propertySelector__icon fa fa-chevron-left"></i></a>
+                    <li class="pagesNavigation__page"><a href=""><i
+                            class="propertySelector__icon fa fa-chevron-left"></i></a>
                     </li>
                     <li class="pagesNavigation__page" v-for="n in 5" :key="n"><a href="">{{n}}</a></li>
                     <li class="pagesNavigation__page"><a href="">...</a></li>
-                    <li class="pagesNavigation__page"><a href=""><i class="propertySelector__icon fa fa-chevron-right"></i></a></li>
+                    <li class="pagesNavigation__page"><a href=""><i
+                            class="propertySelector__icon fa fa-chevron-right"></i></a></li>
                 </ul>
             </div>
         </footer>
@@ -44,7 +48,7 @@
 
 <script>
 import axios from 'axios'
-import {countBy, map} from 'lodash'
+import { countBy, map } from 'lodash'
 
 import configuration from '../../../../configuration'
 
@@ -59,6 +63,7 @@ export default {
             files: [],
             searchText: '',
             filesFiter: '',
+            isLoading: true,
         }
     },
     props: {
@@ -80,6 +85,7 @@ export default {
                 })
 
                 this.files = response.data
+                this.isLoading = false
             } catch (err) {
                 console.error('Files cannot be fetched')
             }
@@ -214,6 +220,11 @@ export default {
                     border-bottom: 1px solid $secondary-color;
                 }
             }
+        }
+
+        &--isLoading {
+            padding: 60px 0;
+            text-align: center;
         }
 
         .footer {
