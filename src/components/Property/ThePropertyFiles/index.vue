@@ -9,7 +9,7 @@
         </header>
         <section class="thePropertyFiles__tabs">
             <ul class="tabs">
-                <li class="tabs__tab" :class="{'tabs__tab--isSelected' : filesFulterNormalized === filter.label}"
+                <li class="tabs__tab" :class="{'tabs__tab--isSelected' : filesFilterNormalized === filter.label}"
                     v-for="filter in filters" :key="filter.label">
                     <button @click.prevent="selectFilter(filter.label)">{{filter.label}} <span>{{filter.count}}</span>
                     </button>
@@ -27,17 +27,16 @@
                     :key="`${file.fileName}_${index}`"
             />
         </main>
-        <footer>
-            <div class="footer__pages"></div>
+        <footer class="footer" v-if="isFilteredFilesListEmpty">
+            <div class="footer__pages">Page 1/20</div>
             <div class="footer__pagesNavigation">
-                <button class="pagesNavigation__previous"></button>
                 <ul class="pagesNavigation__pages">
-                    <!--                    <li class="pagesNavigation__page">1</li>-->
-                    <!--                    <li class="pagesNavigation__page">1</li>-->
-                    <!--                    <li class="pagesNavigation__page">1</li>-->
-                    <!--                    <li class="pagesNavigation__page">1</li>-->
+                    <li class="pagesNavigation__page"><a href=""><i class="propertySelector__icon fa fa-chevron-left"></i></a>
+                    </li>
+                    <li class="pagesNavigation__page" v-for="n in 5" :key="n"><a href="">{{n}}</a></li>
+                    <li class="pagesNavigation__page"><a href="">...</a></li>
+                    <li class="pagesNavigation__page"><a href=""><i class="propertySelector__icon fa fa-chevron-right"></i></a></li>
                 </ul>
-                <button class="pagesNavigation__next"></button>
             </div>
         </footer>
     </section>
@@ -124,8 +123,11 @@ export default {
 
             return this.filteredList.filter(file => file.type === this.filesFiter)
         },
-        filesFulterNormalized() {
+        filesFilterNormalized() {
             return this.filesFiter.toLowerCase().replace('_', ' ')
+        },
+        isFilteredFilesListEmpty() {
+            return this.filesFiltered.length > 0
         }
     }
 }
@@ -185,7 +187,7 @@ export default {
         }
 
         &__tabs {
-
+            margin-bottom: 24px;
         }
 
         .tabs {
@@ -214,17 +216,37 @@ export default {
             }
         }
 
-        &__filesList {
-
-        }
-
         .footer {
-            &__pages {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
 
+            &__pages {
+                font-size: 14px;
+                color: $base-color-light-2;
             }
 
             &__pagesNavigation {
+                display: flex;
+                align-items: center;
 
+                a {
+                    margin-left: 6px;
+                    border-radius: 100%;
+                    background-color: $tertiary-color;
+                    width: 35px;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: $base-color-light-2;
+                    font-size: 13px;
+                    font-weight: bold;
+
+                    &:hover {
+                        background-color: transparentize($base-color-light-2, 0.8);
+                    }
+                }
             }
         }
 
@@ -235,6 +257,11 @@ export default {
 
             &__next {
 
+            }
+
+            &__pages {
+                display: flex;
+                margin: 0;
             }
 
             &__page {
